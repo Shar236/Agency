@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
+import ScrollReveal from './components/ScrollReveal';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -16,6 +17,9 @@ export default function App() {
     <div className="agency-app">
       {/* Scroll restoration on route changes */}
       <ScrollToTop />
+
+      {/* Universal Scroll-Triggered Slide-In Engine */}
+      <ScrollReveal />
 
       {/* Luxury Ambient Lighting Glow */}
       <div className="ambient-glow-wrapper" aria-hidden="true">

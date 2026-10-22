@@ -101,8 +101,8 @@ export default function HomePage() {
       <section className="section studio-growth-section" id="studio-overview">
         <div className="container">
           <div className="studio-growth-grid">
-            {/* Left Column: Visual Studio & Team Mosaic */}
-            <div className="studio-visual-mosaic">
+            {/* Left Column: Visual Studio & Team Mosaic (Slides in from Left) */}
+            <div className="studio-visual-mosaic reveal-left">
               {/* Left Tall Card: Designer at Desk */}
               <div className="studio-mosaic-card card-tall glass-card">
                 <div className="mosaic-img-box">
@@ -147,8 +147,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Narrative & Strategic Positioning */}
-            <div className="studio-growth-content">
+            {/* Right Column: Narrative & Strategic Positioning (Slides in from Right) */}
+            <div className="studio-growth-content reveal-right">
               <div className="section-tag studio-tag">
                 <span className="status-dot-pulse"></span>
                 <span>OUR SERVICES & EXPERTISE</span>
