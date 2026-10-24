@@ -123,9 +123,9 @@ export default function ServicesPage() {
       {/* Services Detailed Grid */}
       <section className="section services-detail-section" style={{ paddingTop: '0' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '28px' }}>
+          <div className="services-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '28px' }}>
             {services.map((svc) => (
-              <article key={svc.id} className="service-detail-card glass-card spotlight-card" id={svc.id} style={{ padding: '36px 30px', borderRadius: '24px' }}>
+              <article key={svc.id} className="service-detail-card glass-card spotlight-card" id={svc.id} style={{ padding: '32px 24px', borderRadius: '24px' }}>
                 <div style={{
                   display: 'inline-block',
                   padding: '4px 12px',

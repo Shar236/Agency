@@ -13,6 +13,18 @@ export default function Navbar({ onOpenAudit }) {
     setMobileOpen(false);
   }, [location.pathname]);
 
+  // Prevent background scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
@@ -36,20 +48,22 @@ export default function Navbar({ onOpenAudit }) {
 
       <header className={`site-header ${scrolled ? 'header-scrolled' : ''}`} id="siteHeader">
         <div className="header-container">
-          {/* Brand Logo & Studio Location Badge */}
+          {/* Brand Logo Lockup */}
           <div className="nav-brand-group">
-            <Link to="/" className="brand-logo" id="brandLogo" aria-label="Saarthi - Home">
-              <div className="brand-icon-box">
-                <span className="brand-icon-spark">✦</span>
-              </div>
-              <div className="logo-text-group">
-                <span className="saarthi-brand-modern">Saarthi</span>
-              </div>
+            <Link to="/" className="brand-logo" id="brandLogo" aria-label="the oblique - Home">
+              <img 
+                src={theme === 'light' ? '/the-oblique-lockup-light.png' : '/the-oblique-lockup-dark.png'} 
+                srcSet={theme === 'light'
+                  ? '/the-oblique-lockup-light-mobile.png 261w, /the-oblique-lockup-light.png 957w'
+                  : '/the-oblique-lockup-dark-mobile.png 261w, /the-oblique-lockup-dark.png 957w'
+                }
+                sizes="(max-width: 600px) 140px, 175px"
+                alt="the oblique" 
+                className="brand-lockup-img" 
+                width="160" 
+                height="42" 
+              />
             </Link>
-            <div className="nav-status-badge">
-              <span className="nav-status-dot"></span>
-              <span className="nav-status-text">Available for Projects</span>
-            </div>
           </div>
 
           {/* Desktop Navigation Links */}
@@ -112,7 +126,7 @@ export default function Navbar({ onOpenAudit }) {
 
             {/* Mobile Hamburger Toggle */}
             <button 
-              className="mobile-menu-toggle" 
+              className={`mobile-menu-toggle ${mobileOpen ? 'is-active' : ''}`}
               onClick={() => setMobileOpen(prev => !prev)}
               aria-label="Toggle navigation menu" 
               aria-expanded={mobileOpen}
@@ -123,6 +137,15 @@ export default function Navbar({ onOpenAudit }) {
             </button>
           </div>
         </div>
+
+        {/* Mobile Drawer Backdrop */}
+        {mobileOpen && (
+          <div 
+            className="mobile-drawer-backdrop" 
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true" 
+          />
+        )}
 
         {/* Mobile Drawer Navigation */}
         <div className={`mobile-drawer ${mobileOpen ? 'open' : ''}`} id="mobileDrawer">
@@ -147,11 +170,12 @@ export default function Navbar({ onOpenAudit }) {
               <span className="mobile-theme-label">Theme Appearance</span>
               <button
                 type="button"
-                className="theme-toggle-btn mobile-theme-btn"
+                className="mobile-theme-pill-btn"
                 onClick={toggleTheme}
-                aria-label="Toggle theme"
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               >
-                {theme === 'dark' ? '☀️ Switch to Light' : '🌙 Switch to Dark'}
+                <span className="pill-theme-icon">{theme === 'dark' ? '☀️' : '🌙'}</span>
+                <span className="pill-theme-text">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
               </button>
             </div>
           </nav>

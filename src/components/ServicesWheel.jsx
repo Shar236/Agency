@@ -104,8 +104,30 @@ export default function ServicesWheel() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [angle, setAngle] = useState(0);
   const [isAutoSpin, setIsAutoSpin] = useState(true);
-  const [radius, setRadius] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 768 ? 165 : 315));
+  const getResponsiveRadii = () => {
+    if (typeof window === 'undefined') return { rx: 315, ry: 315 };
+    const w = window.innerWidth;
+    if (w < 480) {
+      // Mobile screen: vertical ellipse to fit screen width and clear central card with ample margin
+      const rx = Math.min(138, Math.max(115, Math.floor((w - 96) / 2)));
+      const ry = 220;
+      return { rx, ry };
+    }
+    if (w < 768) {
+      const rx = Math.min(180, Math.floor((w - 90) / 2));
+      const ry = 240;
+      return { rx, ry };
+    }
+    if (w < 1024) {
+      return { rx: 270, ry: 270 };
+    }
+    return { rx: 315, ry: 315 };
+  };
+
+  const [radii, setRadii] = useState(getResponsiveRadii);
   
+  const sectionRef = useRef(null);
+  const isVisibleRef = useRef(true);
   const angleRef = useRef(0);
   const autoSpinRef = useRef(true);
   const isDraggingRef = useRef(false);
@@ -124,16 +146,27 @@ export default function ServicesWheel() {
     autoSpinRef.current = isAutoSpin;
   }, [isAutoSpin]);
 
-  // Responsive radius adjustment
+  // Responsive orbit dimensions adjustment
   useEffect(() => {
     const handleResize = () => {
-      setRadius(window.innerWidth < 768 ? 165 : 315);
+      setRadii(getResponsiveRadii());
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Subtle continuous orbital auto-rotation when not hovering or dragging
+  // IntersectionObserver to pause auto-rotation when off-screen (0% CPU/GPU overhead when reading other sections)
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisibleRef.current = entry.isIntersecting;
+    }, { threshold: 0.05 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Subtle continuous orbital auto-rotation when visible and not hovering or dragging
   useEffect(() => {
     let animId;
     let lastTime = performance.now();
@@ -143,8 +176,8 @@ export default function ServicesWheel() {
       const dt = (time - lastTime) * 0.001;
       lastTime = time;
 
-      if (autoSpinRef.current && !isDraggingRef.current && !tweenRef.current && !isHoveredRef.current) {
-        setAngle((prev) => (prev + dt * 12) % 360);
+      if (isVisibleRef.current && autoSpinRef.current && !isDraggingRef.current && !tweenRef.current && !isHoveredRef.current) {
+        setAngle((prev) => (prev + dt * 10) % 360);
       }
     };
 
@@ -206,13 +239,13 @@ export default function ServicesWheel() {
 
   const activeService = WHEEL_SERVICES[activeIdx];
 
-  // Mouse drag to rotate wheel
-  const getMouseAngle = (e, stageEl) => {
+  // Mouse & Touch drag to rotate wheel
+  const getPointerAngle = (clientX, clientY, stageEl) => {
     const rect = stageEl.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
     return Math.atan2(dy, dx) * (180 / Math.PI);
   };
 
@@ -220,13 +253,13 @@ export default function ServicesWheel() {
     if (e.target.closest('.wheel-center-hub') || e.target.closest('.wheel-controls-row')) return;
     const stage = e.currentTarget;
     isDraggingRef.current = true;
-    dragStartMouseAngleRef.current = getMouseAngle(e, stage);
+    dragStartMouseAngleRef.current = getPointerAngle(e.clientX, e.clientY, stage);
     dragStartAngleRef.current = angle;
     setIsAutoSpin(false);
 
     const onMouseMove = (moveEvent) => {
       if (!isDraggingRef.current) return;
-      const currentMouseAngle = getMouseAngle(moveEvent, stage);
+      const currentMouseAngle = getPointerAngle(moveEvent.clientX, moveEvent.clientY, stage);
       const delta = currentMouseAngle - dragStartMouseAngleRef.current;
       setAngle(dragStartAngleRef.current + delta);
     };
@@ -241,8 +274,59 @@ export default function ServicesWheel() {
     window.addEventListener('mouseup', onMouseUp);
   };
 
+  const handleTouchStart = (e) => {
+    if (e.target.closest('.wheel-center-hub') || e.target.closest('.wheel-controls-row')) return;
+    if (e.touches.length !== 1) return;
+    const stage = e.currentTarget;
+    isDraggingRef.current = true;
+    dragStartMouseAngleRef.current = getPointerAngle(e.touches[0].clientX, e.touches[0].clientY, stage);
+    dragStartAngleRef.current = angle;
+    setIsAutoSpin(false);
+
+    const onTouchMove = (moveEvent) => {
+      if (!isDraggingRef.current || moveEvent.touches.length !== 1) return;
+      const currentAngle = getPointerAngle(moveEvent.touches[0].clientX, moveEvent.touches[0].clientY, stage);
+      const delta = currentAngle - dragStartMouseAngleRef.current;
+      setAngle(dragStartAngleRef.current + delta);
+    };
+
+    const onTouchEnd = () => {
+      isDraggingRef.current = false;
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+    };
+
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
+  };
+
+  // Mobile Card Horizontal Swipe Gesture Support
+  const cardTouchStartRef = useRef({ x: 0, y: 0 });
+
+  const handleCardTouchStart = (e) => {
+    if (e.touches.length !== 1) return;
+    cardTouchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    };
+  };
+
+  const handleCardTouchEnd = (e) => {
+    if (e.changedTouches.length !== 1) return;
+    const diffX = e.changedTouches[0].clientX - cardTouchStartRef.current.x;
+    const diffY = e.changedTouches[0].clientY - cardTouchStartRef.current.y;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX < 0) {
+        handleNext();
+      } else {
+        handlePrev();
+      }
+    }
+  };
+
   return (
-    <section className="section services-wheel-section" id="capabilities">
+    <section className="section services-wheel-section" ref={sectionRef} id="capabilities">
       <div className="container">
         {/* Centered Section Header */}
         <div className="section-header text-center">
@@ -262,7 +346,12 @@ export default function ServicesWheel() {
         {/* Interactive 360° Orbital Wheel Stage */}
         <div 
           className="services-wheel-stage" 
+          style={{
+            '--rx': `${radii.rx}px`,
+            '--ry': `${radii.ry}px`
+          }}
           onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
           onMouseEnter={() => { isHoveredRef.current = true; }}
           onMouseLeave={() => { isHoveredRef.current = false; }}
           title="Drag anywhere on the orbit to spin the wheel"
@@ -275,6 +364,8 @@ export default function ServicesWheel() {
           {/* Central Interactive Showcase Hub */}
           <div 
             className="wheel-center-hub glass-card spotlight-card"
+            onTouchStart={handleCardTouchStart}
+            onTouchEnd={handleCardTouchEnd}
             style={{
               '--hub-accent': activeService.accent,
               borderColor: `${activeService.accent}60`,
@@ -323,8 +414,8 @@ export default function ServicesWheel() {
             {WHEEL_SERVICES.map((item, idx) => {
               const nodeBaseAngle = idx * (360 / numItems);
               const currentTotalAngle = (nodeBaseAngle + angle) * (Math.PI / 180);
-              const x = radius * Math.cos(currentTotalAngle);
-              const y = radius * Math.sin(currentTotalAngle);
+              const x = radii.rx * Math.cos(currentTotalAngle);
+              const y = radii.ry * Math.sin(currentTotalAngle);
               const isSelected = activeIdx === idx;
 
               return (
@@ -383,21 +474,20 @@ export default function ServicesWheel() {
           </button>
         </div>
 
-        {/* Quick Clickable Category Chips (Centered) */}
-        <div className="wheel-quick-chips text-center">
+        {/* Sleek Minimalist Capability Progress Dots (Replaces crowded chips) */}
+        <div className="wheel-pagination-dots" role="tablist" aria-label="Capabilities Selection">
           {WHEEL_SERVICES.map((item, idx) => (
             <button
               key={item.id}
               type="button"
-              className={`wheel-chip-btn ${activeIdx === idx ? 'active-chip' : ''}`}
+              className={`wheel-dot ${activeIdx === idx ? 'active-dot' : ''}`}
               style={{
-                '--chip-accent': item.accent
+                '--dot-accent': item.accent
               }}
               onClick={() => selectService(idx)}
-            >
-              <span>{item.icon}</span>
-              <span>{item.title}</span>
-            </button>
+              aria-label={`Select ${item.title}`}
+              title={item.title}
+            />
           ))}
         </div>
       </div>

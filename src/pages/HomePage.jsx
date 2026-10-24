@@ -212,15 +212,14 @@ export default function HomePage() {
               <div
                 key={idx}
                 className="faq-item glass-card"
-                style={{ padding: '20px 24px', borderRadius: '16px', cursor: 'pointer' }}
                 onClick={() => setOpenFaq(openFaq === idx ? -1 : idx)}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3 style={{ fontSize: '1.05rem', color: 'var(--text-main, #ffffff)', fontWeight: 600, margin: 0 }}>{item.q}</h3>
-                  <span style={{ fontSize: '1.4rem', color: 'var(--brand-coral)', transform: openFaq === idx ? 'rotate(45deg)' : 'none', transition: 'transform 0.25s ease' }}>+</span>
+                <div className="faq-question-row">
+                  <h3 className="faq-question-title">{item.q}</h3>
+                  <span className="faq-toggle-icon" style={{ transform: openFaq === idx ? 'rotate(45deg)' : 'none' }}>+</span>
                 </div>
                 {openFaq === idx && (
-                  <div style={{ marginTop: '14px', color: 'var(--text-body)', fontSize: '0.92rem', lineHeight: 1.6, borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}>
+                  <div className="faq-answer-content">
                     {item.a}
                   </div>
                 )}
@@ -233,24 +232,24 @@ export default function HomePage() {
       {/* 9. Final Launch CTA Banner */}
       <section className="section cta-banner-section">
         <div className="container">
-          <div className="cta-banner-card glass-card spotlight-card text-center" style={{ padding: '64px 32px', borderRadius: '28px' }}>
-            <div className="status-badge mx-auto" style={{ marginBottom: '20px' }}>
+          <div className="cta-banner-card glass-card spotlight-card text-center">
+            <div className="status-badge mx-auto">
               <span className="status-dot-pulse"></span>
               <span className="status-text">Accepting New Client Projects · Ludhiana & Worldwide</span>
             </div>
-            <h2 className="cta-banner-title" style={{ fontSize: '2.4rem', color: 'var(--text-main, #ffffff)', marginBottom: '16px' }}>
+            <h2 className="cta-banner-title">
               Have an idea or an existing business?<br />
               <span className="serif-italic gradient-coral-text">Let's build something people remember.</span>
             </h2>
-            <p className="cta-banner-sub mx-auto" style={{ maxWidth: '620px', color: 'var(--text-muted)', marginBottom: '32px', fontSize: '1.05rem', lineHeight: 1.65 }}>
+            <p className="cta-banner-sub mx-auto">
               Tell us about your project, timeline, and goals. We'll share honest feedback, practical recommendations, and an actionable roadmap to get you there.
             </p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-              <Link to="/contact" className="btn btn-primary magnetic-btn" style={{ padding: '16px 36px', fontSize: '1rem' }}>
+            <div className="cta-banner-actions">
+              <Link to="/contact" className="btn btn-primary magnetic-btn">
                 <span>Start a Project</span>
                 <span className="arrow">→</span>
               </Link>
-              <Link to="/services" className="btn btn-glass" style={{ padding: '16px 28px' }}>
+              <Link to="/services" className="btn btn-glass">
                 <span>Explore Services</span>
               </Link>
             </div>

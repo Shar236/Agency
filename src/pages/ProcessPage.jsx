@@ -111,7 +111,7 @@ export default function ProcessPage() {
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginTop: '36px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '24px', marginTop: '36px' }}>
             <div className="glass-card spotlight-card" style={{ padding: '28px', borderRadius: '20px' }}>
               <div style={{ fontSize: '1.8rem', marginBottom: '12px' }}>💬</div>
               <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main, #ffffff)', marginBottom: '10px' }}>Direct Communication</h3>

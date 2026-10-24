@@ -108,23 +108,25 @@ export default function Hero3DBackground() {
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
+    const isMobile = window.innerWidth < 768;
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || window.innerHeight;
 
-    // 1. Scene & Perspective Camera
+    // 1. Scene & Perspective Camera (optimized FOV for mobile vertical screens)
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-    camera.position.set(0, 14, 94);
+    const camera = new THREE.PerspectiveCamera(isMobile ? 62 : 50, width / height, 0.1, 1000);
+    camera.position.set(0, isMobile ? 18 : 14, isMobile ? 122 : 94);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
       antialias: true,
-      powerPreference: 'high-performance'
+      powerPreference: isMobile ? 'default' : 'high-performance'
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Render at crisp Retina resolution (capped at 1.8 to ensure high performance)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
 
     // 2. TECH + MANAGEMENT ARCHITECTURE NODES DEFINITION
     // Strategically positioned in Left Wing (Tech Cluster) and Right Wing (Management Cluster)
@@ -392,18 +394,27 @@ export default function Hero3DBackground() {
       if (!container) return;
       const newW = container.clientWidth || window.innerWidth;
       const newH = container.clientHeight || window.innerHeight;
+      const mobileNow = newW < 768;
+      camera.fov = mobileNow ? 62 : 50;
+      camera.position.set(0, mobileNow ? 18 : 14, mobileNow ? 122 : 94);
       camera.aspect = newW / newH;
       camera.updateProjectionMatrix();
       renderer.setSize(newW, newH);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
       renderer.render(scene, camera);
     };
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // 7. ANIMATION LOOP
+    // 7. ANIMATION LOOP WITH ZERO-LAG INTERSECTION OBSERVER
     let animId = null;
+    let isVisible = true;
     const clock = new THREE.Clock();
 
     const animate = () => {
+      if (!isVisible) {
+        animId = null;
+        return;
+      }
       animId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
@@ -411,8 +422,8 @@ export default function Hero3DBackground() {
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
-      camera.position.x = mouse.x * 14;
-      camera.position.y = 14 + mouse.y * -8;
+      camera.position.x = mouse.x * (isMobile ? 6 : 14);
+      camera.position.y = (isMobile ? 18 : 14) + mouse.y * -8;
       camera.lookAt(0, 0, 0);
 
       // Rotate and float Tech + Management Nodes
@@ -450,11 +461,40 @@ export default function Hero3DBackground() {
       renderer.render(scene, camera);
     };
 
+    // Pause rendering loop completely when Hero is scrolled out of view
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible && !animId) {
+        clock.start();
+        animId = requestAnimationFrame(animate);
+      } else if (!isVisible && animId) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    }, { threshold: 0.05 });
+    observer.observe(container);
+
+    // Pause when browser tab is inactive
+    const handleVisibility = () => {
+      if (document.hidden) {
+        if (animId) {
+          cancelAnimationFrame(animId);
+          animId = null;
+        }
+      } else if (isVisible && !animId) {
+        clock.start();
+        animId = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     animate();
 
     // Cleanup on unmount
     return () => {
-      cancelAnimationFrame(animId);
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibility);
+      if (animId) cancelAnimationFrame(animId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       renderer.dispose();

@@ -67,8 +67,8 @@ export default function ContactPage() {
   const socialLinks = [
     {
       name: 'Instagram',
-      handle: '@saarthi.agency',
-      url: 'https://instagram.com',
+      handle: '@theobligue',
+      url: 'https://www.instagram.com/theobligue/',
       iconClass: 'icon-ig',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -79,59 +79,13 @@ export default function ContactPage() {
       )
     },
     {
-      name: 'LinkedIn',
-      handle: 'Saarthi Digital Agency',
-      url: 'https://linkedin.com',
-      iconClass: 'icon-li',
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-          <rect x="2" y="9" width="4" height="12"></rect>
-          <circle cx="4" cy="4" r="2"></circle>
-        </svg>
-      )
-    },
-    {
-      name: 'Twitter / X',
-      handle: '@saarthi_hq',
-      url: 'https://twitter.com',
-      iconClass: 'icon-tw',
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
-      )
-    },
-    {
       name: 'WhatsApp Direct',
-      handle: '+91 99999 99999',
-      url: 'https://wa.me/919999999999?text=Hi%20Saarthi%20Studio%2C%20I%20want%20to%20discuss%20a%20project',
+      handle: '+91 77174 53630',
+      url: 'https://wa.me/917717453630?text=Hi%20the%20oblique%2C%20I%20want%20to%20discuss%20a%20project',
       iconClass: 'icon-wa',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-        </svg>
-      )
-    },
-    {
-      name: 'Facebook',
-      handle: 'Saarthi Studio Global',
-      url: 'https://facebook.com',
-      iconClass: 'icon-fb',
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-        </svg>
-      )
-    },
-    {
-      name: 'GitHub',
-      handle: 'github.com/saarthi',
-      url: 'https://github.com',
-      iconClass: 'icon-gh',
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
         </svg>
       )
     }
@@ -298,8 +252,8 @@ export default function ContactPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', borderTop: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.08))', paddingTop: '16px' }}>
                 <div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-muted, #64748b)', fontWeight: 700, textTransform: 'uppercase' }}>Direct Email</div>
-                  <a href="mailto:hello@saarthi.agency" style={{ color: 'var(--text-main, #ffffff)', fontWeight: 600, fontSize: '0.92rem', textDecoration: 'none', display: 'inline-block', marginTop: '2px' }}>
-                    hello@saarthi.agency ↗
+                  <a href="mailto:theobligue@gmail.com" style={{ color: 'var(--text-main, #ffffff)', fontWeight: 600, fontSize: '0.92rem', textDecoration: 'none', display: 'inline-block', marginTop: '2px' }}>
+                    theobligue@gmail.com ↗
                   </a>
                 </div>
 
@@ -329,7 +283,7 @@ export default function ContactPage() {
                 Drop our studio a message on WhatsApp for rapid scoping questions and voice notes.
               </p>
               <a
-                href="https://wa.me/919999999999?text=Hi%20Saarthi%20Studio%2C%20I%20want%20to%20discuss%20a%20project"
+                href="https://wa.me/917717453630?text=Hi%20the%20oblique%2C%20I%20want%20to%20discuss%20a%20project"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

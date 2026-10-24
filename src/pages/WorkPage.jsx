@@ -4,46 +4,50 @@ import { Link } from 'react-router-dom';
 export default function WorkPage() {
   const caseStudies = [
     {
-      id: 'caseStudy1',
-      title: 'ApexFlow SaaS Flagship',
-      tagline: 'High-speed cloud platform engineered to scale.',
-      category: 'Web Engineering & SaaS',
+      id: 'apexvouchers',
+      number: '01',
+      title: 'Apex Vouchers',
+      tagline: 'Discounted Official Exam Voucher Engine & Automated Delivery',
+      category: 'FinTech E-Commerce & EdTech',
       year: '2026',
-      badge: 'React / Next.js + MERN Stack',
-      sector: 'Enterprise Cloud',
-      img: './images/project-1.jpg',
-      desc: 'Bespoke full-stack web application engineered without template bloat, featuring custom interactive 3D WebGL components, real-time analytics dashboards, and sub-0.4s load times.',
-      metricNum: '+145%',
-      metricText: 'increase in self-serve onboarding conversion',
+      badge: 'Next.js 14 · Pearson Partner Directory · Razorpay / UPI',
+      sector: 'Exam Vouchers & EdTech',
+      liveUrl: 'https://apexvouchers.com',
+      displayUrl: 'apexvouchers.com',
+      img: '/images/project-apexvouchers.jpg',
+      desc: 'Built an official exam voucher marketplace listed in Pearson’s Registered Partner Directory. Solves upfront testing fees for students by offering official PTE, TOEFL, IELTS, and Duolingo vouchers with 10-second automated dispatch, instant score calculators, and Razorpay/UPI gateway integration.',
+      deliverables: [
+        'Pearson Partner Directory Listed',
+        '10s Automated Code Dispatch Engine',
+        'Dynamic PTE Score Calculators',
+        'Razorpay & Instant UPI Gateway'
+      ],
+      metricNum: '10s',
+      metricText: 'instant delivery with ₹14,999 guaranteed lowest PTE voucher pricing in India',
       reverse: false
     },
     {
-      id: 'caseStudy2',
-      title: 'LuxeAura DTC Scale Engine',
-      tagline: 'High-ROAS Meta & Performance Max scaling.',
-      category: 'Performance Ads & Commerce',
+      id: 'janetrade',
+      number: '02',
+      title: 'JaneTrade',
+      tagline: 'Privacy-Preserving MSME Invoice Financing Platform',
+      category: 'Web3 FinTech & DeFi Factoring',
       year: '2026',
-      badge: 'Meta CAPI + Shopify Plus',
-      sector: 'Direct-to-Consumer',
-      img: './images/project-2.jpg',
-      desc: 'Full-funnel Meta & Google Performance Max acquisition campaign paired with server-side CAPI tracking, motion creatives, and headless Shopify Plus checkout conversion.',
-      metricNum: '4.8×',
-      metricText: 'verified blended ROAS across $680K+ spend',
+      badge: 'Next.js 14 · Avalanche Blockchain · ZK-Proof Privacy',
+      sector: 'Decentralized Invoice Factoring',
+      liveUrl: 'https://jane-trade.vercel.app/',
+      displayUrl: 'jane-trade.vercel.app',
+      img: '/images/project-janetrade.jpg',
+      desc: 'Engineered a next-generation decentralized invoice financing platform for Indian MSMEs facing 45–90 day payment delays. Using Avalanche smart contracts and Zero-Knowledge (ZK) credit proofs, suppliers tokenize unpaid receivables and unlock instant non-dilutive liquidity.',
+      deliverables: [
+        'ZK Privacy-Preserving Scoring',
+        'Avalanche Escrow Smart Contracts',
+        'Instant Liquidity Factoring Protocol',
+        'Non-Custodial Web3 MSME Telemetry'
+      ],
+      metricNum: 'ZK-Proof',
+      metricText: 'instant liquidity unlocked with zero client contract data exposure',
       reverse: true
-    },
-    {
-      id: 'caseStudy3',
-      title: 'UrbanNest Lead Machine',
-      tagline: 'Dominating organic search & automated inbound.',
-      category: 'SEO & Inbound Lead Engine',
-      year: '2026',
-      badge: 'Technical SEO + AI Automation',
-      sector: 'Commercial Services',
-      img: './images/project-3.jpg',
-      desc: 'Comprehensive technical SEO overhaul, JSON-LD schema architecture, and keyword clustering that secured #1 Google rankings for 30+ buyer-intent keywords with 24/7 AI WhatsApp lead qualification.',
-      metricNum: '#1 Rank',
-      metricText: 'across 34 commercial keywords & 3.4× inbound leads',
-      reverse: false
     }
   ];
 
@@ -61,7 +65,7 @@ export default function WorkPage() {
             <span className="serif-italic gradient-coral-text">for itself.</span>
           </h1>
           <p className="hero-description mx-auto" style={{ maxWidth: '640px' }}>
-            Selected projects where thoughtful design, clean code, and strategic marketing delivered measurable growth for our clients.
+            Selected live projects where thoughtful engineering, strategic design, and automated systems deliver measurable growth and real commercial impact.
           </p>
         </div>
       </section>
@@ -82,25 +86,72 @@ export default function WorkPage() {
                       <span className="case-client-tag">{item.category}</span>
                       <span className="case-year">{item.year}</span>
                     </div>
-                    <h2 className="case-headline">{item.tagline}</h2>
+                    <h2 className="case-headline">{item.title} — {item.tagline}</h2>
                     <p className="case-description">{item.desc}</p>
+
+                    {item.deliverables && (
+                      <ul className="case-deliverables">
+                        {item.deliverables.map((del, dIdx) => (
+                          <li key={dIdx} className="case-deliverable-item">
+                            <span className="check-icon">✓</span>
+                            <span>{del}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
                     <div className="case-metric-highlight">
                       <span className="metric-num serif-italic gradient-coral-text">{item.metricNum}</span>
                       <span className="metric-text">{item.metricText}</span>
                     </div>
-                    <Link to="/contact" className="btn btn-glass">
-                      Start a Similar Project →
-                    </Link>
+
+                    <div className="case-actions-row">
+                      <a 
+                        href={item.liveUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="btn-live-deploy"
+                        id={`btnLive-${item.id}`}
+                      >
+                        <span>Visit Live Platform</span>
+                        <span className="arrow-ext">↗</span>
+                      </a>
+                      <Link to="/contact" className="btn btn-glass">
+                        Discuss Similar Project →
+                      </Link>
+                    </div>
                   </div>
+
                   <div className="case-study-visual">
                     <div className="browser-frame-clean">
                       <div className="browser-header">
                         <div className="window-dots"><span className="dot"></span><span className="dot"></span><span className="dot"></span></div>
-                        <div className="browser-address-bar"><span>saarthi-preview / {item.title.toLowerCase().replace(/\s+/g, '-')}</span></div>
-                        <div className="case-number-badge">02</div>
+                        <div className="browser-address-bar">
+                          <a 
+                            href={item.liveUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="browser-address-bar-link"
+                          >
+                            <span>https://{item.displayUrl}</span>
+                            <span className="ext-icon">↗</span>
+                          </a>
+                        </div>
+                        <div className="case-number-badge">{item.number}</div>
                       </div>
                       <div className="case-img-container">
-                        <img src={item.img} alt={item.title} className="case-main-img" loading="lazy" />
+                        <a 
+                          href={item.liveUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="case-img-link"
+                          title={`Open ${item.title} live in new tab`}
+                        >
+                          <img src={item.img} alt={`${item.title} Preview`} className="case-main-img" loading="lazy" />
+                          <div className="case-preview-hover-tag">
+                            <span>Open Live Website ↗</span>
+                          </div>
+                        </a>
                         <div className="case-overlay-tags">
                           <span className="tag-left">{item.badge}</span>
                           <span className="tag-right">{item.sector}</span>
@@ -115,11 +166,32 @@ export default function WorkPage() {
                     <div className="browser-frame-clean">
                       <div className="browser-header">
                         <div className="window-dots"><span className="dot"></span><span className="dot"></span><span className="dot"></span></div>
-                        <div className="browser-address-bar"><span>saarthi-preview / {item.title.toLowerCase().replace(/\s+/g, '-')}</span></div>
-                        <div className="case-number-badge">{item.id === 'caseStudy1' ? '01' : '03'}</div>
+                        <div className="browser-address-bar">
+                          <a 
+                            href={item.liveUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="browser-address-bar-link"
+                          >
+                            <span>https://{item.displayUrl}</span>
+                            <span className="ext-icon">↗</span>
+                          </a>
+                        </div>
+                        <div className="case-number-badge">{item.number}</div>
                       </div>
                       <div className="case-img-container">
-                        <img src={item.img} alt={item.title} className="case-main-img" loading="lazy" />
+                        <a 
+                          href={item.liveUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="case-img-link"
+                          title={`Open ${item.title} live in new tab`}
+                        >
+                          <img src={item.img} alt={`${item.title} Preview`} className="case-main-img" loading="lazy" />
+                          <div className="case-preview-hover-tag">
+                            <span>Open Live Website ↗</span>
+                          </div>
+                        </a>
                         <div className="case-overlay-tags">
                           <span className="tag-left">{item.badge}</span>
                           <span className="tag-right">{item.sector}</span>
@@ -127,20 +199,46 @@ export default function WorkPage() {
                       </div>
                     </div>
                   </div>
+
                   <div className="case-study-info">
                     <div className="case-meta">
                       <span className="case-client-tag">{item.category}</span>
                       <span className="case-year">{item.year}</span>
                     </div>
-                    <h2 className="case-headline">{item.tagline}</h2>
+                    <h2 className="case-headline">{item.title} — {item.tagline}</h2>
                     <p className="case-description">{item.desc}</p>
+
+                    {item.deliverables && (
+                      <ul className="case-deliverables">
+                        {item.deliverables.map((del, dIdx) => (
+                          <li key={dIdx} className="case-deliverable-item">
+                            <span className="check-icon">✓</span>
+                            <span>{del}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
                     <div className="case-metric-highlight">
                       <span className="metric-num serif-italic gradient-coral-text">{item.metricNum}</span>
                       <span className="metric-text">{item.metricText}</span>
                     </div>
-                    <Link to="/contact" className="btn btn-glass">
-                      Start a Similar Project →
-                    </Link>
+
+                    <div className="case-actions-row">
+                      <a 
+                        href={item.liveUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="btn-live-deploy"
+                        id={`btnLive-${item.id}`}
+                      >
+                        <span>Visit Live Platform</span>
+                        <span className="arrow-ext">↗</span>
+                      </a>
+                      <Link to="/contact" className="btn btn-glass">
+                        Discuss Similar Project →
+                      </Link>
+                    </div>
                   </div>
                 </>
               )}
@@ -157,7 +255,7 @@ export default function WorkPage() {
               Want results like these for <span className="serif-italic gradient-coral-text">your business?</span>
             </h2>
             <p className="cta-banner-sub mx-auto" style={{ maxWidth: '580px', color: 'var(--text-muted)', marginBottom: '32px', lineHeight: 1.6 }}>
-              Whether you need a high-converting website, a memorable brand identity, or an ad campaign that actually generates profit, we're ready.
+              Whether you need a high-converting web application, a scalable e-commerce marketplace, or custom Web3 architecture, our senior engineers are ready.
             </p>
             <Link to="/contact" className="btn btn-primary magnetic-btn" style={{ padding: '14px 32px', fontSize: '1rem' }}>
               <span>Discuss Your Project</span>

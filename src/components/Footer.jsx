@@ -1,28 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = async (e) => {
-    e.preventDefault();
-    if (!email || !email.includes('@')) return;
-    try {
-      await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      setSubscribed(true);
-      setTimeout(() => {
-        setEmail('');
-        setSubscribed(false);
-      }, 4000);
-    } catch (err) {
-      setSubscribed(true);
-    }
-  };
+  const { theme } = useTheme();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -34,11 +15,19 @@ export default function Footer() {
         {/* Top Highlight Row */}
         <div className="footer-top-row">
           <div className="footer-brand-col">
-            <Link to="/" className="brand-logo" aria-label="Saarthi - Home">
-              <div className="brand-icon-box">
-                <span className="brand-icon-spark">✦</span>
-              </div>
-              <span className="saarthi-brand-modern" style={{ fontSize: '1.4rem' }}>Saarthi</span>
+            <Link to="/" className="brand-logo" aria-label="the oblique - Home">
+              <img 
+                src={theme === 'light' ? '/the-oblique-lockup-light.png' : '/the-oblique-lockup-dark.png'} 
+                srcSet={theme === 'light'
+                  ? '/the-oblique-lockup-light-mobile.png 261w, /the-oblique-lockup-light.png 957w'
+                  : '/the-oblique-lockup-dark-mobile.png 261w, /the-oblique-lockup-dark.png 957w'
+                }
+                sizes="(max-width: 600px) 140px, 185px"
+                alt="the oblique" 
+                className="brand-lockup-img footer-lockup-img" 
+                width="170" 
+                height="46" 
+              />
             </Link>
             <p className="footer-tagline">
               A digital design & development studio based in Ludhiana, Punjab. We craft memorable websites, brand identities, and growth strategies for ambitious businesses.
@@ -47,14 +36,14 @@ export default function Footer() {
 
           <div className="footer-email-col">
             <span className="footer-inquiries-label">NEW BUSINESS INQUIRIES</span>
-            <a href="mailto:hello@saarthi.agency" className="footer-email-link">
-              hello@saarthi.agency ↗
+            <a href="mailto:theobligue@gmail.com" className="footer-email-link">
+              theobligue@gmail.com ↗
             </a>
           </div>
         </div>
 
-        {/* 4-Column Links & Newsletter Grid */}
-        <div className="footer-links-grid">
+        {/* 3-Column Links Grid */}
+        <div className="footer-links-grid footer-links-grid-3col">
           {/* Navigation Column */}
           <div className="footer-col">
             <h4 className="footer-col-title">Navigation</h4>
@@ -84,47 +73,29 @@ export default function Footer() {
           <div className="footer-col">
             <h4 className="footer-col-title">Social & Connect</h4>
             <ul className="footer-links">
-              <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram ↗</a></li>
-              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
-              <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter / X ↗</a></li>
-              <li><a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer">WhatsApp Direct ↗</a></li>
-              <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook ↗</a></li>
-              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
-              <li><a href="mailto:hello@saarthi.agency">hello@saarthi.agency ↗</a></li>
+              <li>
+                <a href="https://www.instagram.com/theobligue/" target="_blank" rel="noopener noreferrer">
+                  Instagram (@theobligue) ↗
+                </a>
+              </li>
+              <li>
+                <a href="https://wa.me/917717453630" target="_blank" rel="noopener noreferrer">
+                  WhatsApp Direct (+91 77174 53630) ↗
+                </a>
+              </li>
+              <li>
+                <a href="mailto:theobligue@gmail.com">
+                  theobligue@gmail.com ↗
+                </a>
+              </li>
             </ul>
-          </div>
-
-          {/* Newsletter Column */}
-          <div className="footer-col footer-newsletter-box">
-            <h4 className="footer-col-title">The Studio Dispatch</h4>
-            <p className="footer-newsletter-desc">
-              Occasional practical insights on web craft, conversion design, and scaling digital brands. No spam.
-            </p>
-            <form className="footer-newsletter-form" onSubmit={handleSubscribe}>
-              <input
-                type="email"
-                className="footer-input-field"
-                placeholder="founder@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <button type="submit" className="footer-subscribe-btn" aria-label="Subscribe to newsletter">
-                <span>→</span>
-              </button>
-            </form>
-            {subscribed && (
-              <p style={{ color: '#34D399', fontSize: '0.78rem', marginTop: '6px', fontWeight: 600 }}>
-                ✓ You are on the priority dispatch list. Welcome!
-              </p>
-            )}
           </div>
         </div>
 
         {/* Bottom Legal & Back to Top Bar */}
         <div className="footer-bottom-bar">
           <div className="footer-copyright">
-            © {new Date().getFullYear()} Saarthi Studio · Crafted in Ludhiana, Punjab. Working with ambitious brands worldwide.
+            © {new Date().getFullYear()} the oblique · Crafted in Ludhiana, Punjab. Working with ambitious brands worldwide.
           </div>
 
           <div className="footer-legal-links">
