@@ -10,10 +10,10 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://theobligue_db_user:2Sm66Qr6ZysVu3a2@cluster0.obblluk.mongodb.net/theobligue?retryWrites=true&w=majority';
-const SMTP_EMAIL = process.env.SMTP_EMAIL || 'theobligue@gmail.com';
-const SMTP_PASS = (process.env.SMTP_PASS || 'ywrh acsw qwaj pneu').replace(/\s+/g, '');
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'theobligue@gmail.com';
+const MONGO_URI = process.env.MONGO_URI;
+const SMTP_EMAIL = process.env.SMTP_EMAIL;
+const SMTP_PASS = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : '';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.SMTP_EMAIL || 'theobligue@gmail.com';
 const INSTAGRAM_URL = process.env.INSTAGRAM_URL || 'https://www.instagram.com/theobligue/';
 const WHATSAPP_LINK = process.env.WHATSAPP_LINK || 'https://wa.me/917717453630';
 
@@ -21,40 +21,50 @@ app.use(cors());
 app.use(express.json());
 
 // Nodemailer Transporter Setup
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: SMTP_EMAIL,
-    pass: SMTP_PASS
-  }
-});
+const transporter = (SMTP_EMAIL && SMTP_PASS)
+  ? nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: SMTP_EMAIL,
+        pass: SMTP_PASS
+      }
+    })
+  : null;
 
 // Verify email configuration on startup
-transporter.verify((error) => {
-  if (error) {
-    console.warn('⚠️ Nodemailer Transporter verification warning:', error.message);
-  } else {
-    console.log('📬 Nodemailer ready to dispatch emails via Gmail SMTP (theobligue@gmail.com)');
-  }
-});
+if (transporter) {
+  transporter.verify((error) => {
+    if (error) {
+      console.warn('⚠️ Nodemailer Transporter verification warning:', error.message);
+    } else {
+      console.log(`📬 Nodemailer ready to dispatch emails via Gmail SMTP (${SMTP_EMAIL})`);
+    }
+  });
+} else {
+  console.log('ℹ️ Nodemailer: SMTP_EMAIL or SMTP_PASS not set in environment.');
+}
 
 // MongoDB Connection
 let isMongoConnected = false;
 const inMemoryInquiries = [];
 const inMemoryNewsletters = [];
 
-mongoose.connect(MONGO_URI, {
-  serverSelectionTimeoutMS: 5000
-})
-.then(() => {
-  isMongoConnected = true;
-  console.log('✅ MongoDB connected successfully to theobligue Atlas cluster');
-})
-.catch((err) => {
-  isMongoConnected = false;
-  console.error('❌ MongoDB Atlas connection error:', err.message);
-  console.log('ℹ️ Running with in-memory storage fallback until Atlas reconnects.');
-});
+if (MONGO_URI) {
+  mongoose.connect(MONGO_URI, {
+    serverSelectionTimeoutMS: 5000
+  })
+  .then(() => {
+    isMongoConnected = true;
+    console.log('✅ MongoDB connected successfully to database');
+  })
+  .catch((err) => {
+    isMongoConnected = false;
+    console.error('❌ MongoDB Atlas connection error:', err.message);
+    console.log('ℹ️ Running with in-memory storage fallback until reconnects.');
+  });
+} else {
+  console.log('ℹ️ MONGO_URI not configured in environment variables. Running with in-memory storage fallback.');
+}
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -69,6 +79,10 @@ app.get('/api/health', (req, res) => {
 
 // Helper function to send notification to Admin
 async function sendAdminNotification(inquiry) {
+  if (!transporter) {
+    console.warn('⚠️ Nodemailer transporter not configured.');
+    return;
+  }
   const mailOptions = {
     from: `"the oblique Alerts" <${SMTP_EMAIL}>`,
     to: ADMIN_EMAIL,
@@ -128,6 +142,10 @@ async function sendAdminNotification(inquiry) {
 
 // Helper function to send Auto-Reply to Client
 async function sendClientAutoReply(inquiry) {
+  if (!transporter) {
+    console.warn('⚠️ Nodemailer transporter not configured.');
+    return;
+  }
   const mailOptions = {
     from: `"the oblique" <${SMTP_EMAIL}>`,
     to: inquiry.email,
